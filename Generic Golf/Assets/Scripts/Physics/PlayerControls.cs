@@ -1,108 +1,156 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Net;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerControls : MonoBehaviour
 {
-    private Vector2 startPoint { get; set; }
-    private Vector2 endPoint { get; set; }
-    private Rigidbody2D playerBody { get; set; }
+    [SerializeField] private float frictionCoeff;
+    [SerializeField] private float stopVelocity;
     private LineRenderer line { get; set; }
-
-    [SerializeField] private int power;
+    private Rigidbody2D playerBody { get; set; }
+    private Vector3? mousePos { get; set; }
+    private bool isIdle { get; set; }
+    private bool isAiming { get; set; }
 
     private void Awake()
     {
-
         playerBody = GetComponent<Rigidbody2D>();
-        line = GetComponent<LineRenderer>();
 
-        line.positionCount = 2;
-        line.startWidth = 0.08f;
-        line.endWidth = 0.08f;
+        line = GetComponent<LineRenderer>();
+        line.enabled = false;
+
+        isAiming = false;
     }
 
-
+    // Update is called once per frame
     void Update()
     {
-        line.SetPosition(0, gameObject.transform.position);
-
-
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (playerBody.velocity.magnitude < stopVelocity)
         {
-            startPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Stop();
         }
 
-        if (Input.GetKey(KeyCode.Mouse0))
+        ProcessAiming();
+
+        if (Input.GetMouseButtonUp(0))
         {
-            endPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition); ;
-            
+            if (isAiming)
+            {
+                Shoot();
+            }
+
         }
 
-        Throw();
 
+        /*
+        if (!WorldPoint.HasValue)
+        {
+            return;
+        }
+        */
+
+
+        
+        
     }
 
-    private void Throw()
+    private void FixedUpdate()
     {
-        float xDis = endPoint.x - startPoint.x;
-        float yDis = endPoint.y - startPoint.y;
-
-        float angle = Mathf.Atan(yDis / xDis);
-        float totalVel = (xDis / Mathf.Cos(angle)) * power;
-
-        line.SetPosition(1, new Vector2(-1 * xDis, -1 * yDis));
-
-
-        if (Input.GetKeyUp(KeyCode.Mouse0))
+        if (playerBody.velocity.magnitude > stopVelocity)
         {
-
-            try
-            {
-                playerBody.velocity = new Vector2(-1 * totalVel * Mathf.Cos(angle), -1 * totalVel * Mathf.Sin(angle));
-
-            }
+            Friction(playerBody.velocity);
+        }    
+    }
 
 
-            catch
-            {
-                playerBody.velocity = new Vector2(0, -1 * yDis * power);
-            }
+    private void OnMouseDown()
+    {
+        if (isIdle)
+        {
+            isAiming = true;
+        }
+    }
+
+    // Custom Made Functions Below
+
+    private void DrawLine(Vector3 worldPoint)
+    {
+        worldPoint.z = 0;
+
+
+        Vector3[] positions = { gameObject.transform.position, worldPoint };
+
+        line.enabled = true;
+        line.SetPositions(positions);
+        
+        
+    }
+
+    private void ProcessAiming()
+    {
+        if (!isAiming || !isIdle)
+        {
+            return;
 
         }
 
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        DrawLine(mousePos.Value);
 
+    }
+
+    private void Friction(Vector2 velocity)
+    {
+        velocity -= velocity * frictionCoeff;
+        
+        playerBody.velocity = velocity;
+
+    }
+
+    private void Stop()
+    {
+        playerBody.velocity = Vector2.zero;
+        playerBody.angularVelocity = 0;
+
+        isIdle = true;
+    }
+
+    private void Shoot()
+    {
+        isAiming = false;
+        line.enabled = false;
+
+        // Task: Give the player body a Velocity/Force that is propotional to the linne drawn and oppsite in direction
+        
 
     }
 
 
+    /*
+    private bool CastRay()
+    {
+        Vector3 screenMousePosFar = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.farClipPlane);
+        Vector3 screenMousePosNear = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane);
 
-    /* public void Throw(InputAction.CallbackContext context)
-       {
-           Vector3 startPoint = new Vector2();
-           Vector3 endPoint = new Vector2();
+        Vector3 worldMousePosFar = Camera.main.ScreenToWorldPoint(screenMousePosFar);
+        Vector3 worldMousePosNear = Camera.main.ScreenToWorldPoint(screenMousePosNear);
 
-           float angle;
+        RaycastHit2D hit;
 
+        if (Physics2D.Raycast(worldMousePosNear, worldMousePosFar - worldMousePosNear, float.PositiveInfinity))
+        {
+            hit = Physics2D.Raycast(worldMousePosNear, worldMousePosFar - worldMousePosNear, float.PositiveInfinity);
 
-           if( context.started)
-           {
-               startPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            return true;
+        }
 
-               line.SetPosition(0, gameObject.transform.position);
-           }
+        else
+        {
+            return false;
+        }
 
-           else if (context.canceled)
-           {
-               endPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-               line.SetPosition(1, gameObject.transform.position + (endPoint - startPoint));
-
-               playerBody.AddForce(power * (endPoint - startPoint), ForceMode2D.Impulse);
-           }
-
-       } */
-
+        
+    }
+    */
+    
 }
