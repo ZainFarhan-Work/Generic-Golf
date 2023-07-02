@@ -1,14 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
+    [SerializeField] private int shotPower;
+    [SerializeField] private int maxSpeed;
+    [Space]
     [SerializeField] private float frictionCoeff;
     [SerializeField] private float stopVelocity;
     private LineRenderer line { get; set; }
     private Rigidbody2D playerBody { get; set; }
-    private Vector3? mousePos { get; set; }
+    private Vector3 mousePos { get; set; }
+    private Vector3 direction { get; set; }
     private bool isIdle { get; set; }
     private bool isAiming { get; set; }
 
@@ -17,6 +23,8 @@ public class PlayerControls : MonoBehaviour
         playerBody = GetComponent<Rigidbody2D>();
 
         line = GetComponent<LineRenderer>();
+        line.startWidth = 0.08f;
+        line.endWidth = 0.08f;
         line.enabled = false;
 
         isAiming = false;
@@ -25,12 +33,12 @@ public class PlayerControls : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ProcessAiming();
+
         if (playerBody.velocity.magnitude < stopVelocity)
         {
             Stop();
         }
-
-        ProcessAiming();
 
         if (Input.GetMouseButtonUp(0))
         {
@@ -40,17 +48,6 @@ public class PlayerControls : MonoBehaviour
             }
 
         }
-
-
-        /*
-        if (!WorldPoint.HasValue)
-        {
-            return;
-        }
-        */
-
-
-        
         
     }
 
@@ -59,7 +56,8 @@ public class PlayerControls : MonoBehaviour
         if (playerBody.velocity.magnitude > stopVelocity)
         {
             Friction(playerBody.velocity);
-        }    
+        }
+   
     }
 
 
@@ -73,19 +71,6 @@ public class PlayerControls : MonoBehaviour
 
     // Custom Made Functions Below
 
-    private void DrawLine(Vector3 worldPoint)
-    {
-        worldPoint.z = 0;
-
-
-        Vector3[] positions = { gameObject.transform.position, worldPoint };
-
-        line.enabled = true;
-        line.SetPositions(positions);
-        
-        
-    }
-
     private void ProcessAiming()
     {
         if (!isAiming || !isIdle)
@@ -95,8 +80,35 @@ public class PlayerControls : MonoBehaviour
         }
 
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        DrawLine(mousePos.Value);
+        DrawLine(mousePos);
 
+        
+
+    }
+
+    private void DrawLine(Vector3 worldPoint)
+    {
+        worldPoint.z = 0;
+
+        Vector3 differece = new Vector3(worldPoint.x - transform.position.x, worldPoint.y - transform.position.y, 0);
+
+        direction = transform.position - differece;
+
+        Vector3[] positions = { transform.position, transform.position - differece};
+
+        line.enabled = true;
+        line.SetPositions(positions);
+              
+    }
+
+    private void Shoot()
+    {
+        isAiming = false;
+        line.enabled = false;
+
+        Vector2 localDifference = direction - transform.position;
+
+        playerBody.AddForce(localDifference * Time.deltaTime * shotPower, ForceMode2D.Impulse);
     }
 
     private void Friction(Vector2 velocity)
@@ -115,15 +127,37 @@ public class PlayerControls : MonoBehaviour
         isIdle = true;
     }
 
+
+
+
+
+    /*
     private void Shoot()
     {
         isAiming = false;
         line.enabled = false;
 
-        // Task: Give the player body a Velocity/Force that is propotional to the linne drawn and oppsite in direction
-        
+        float xDis = mousePos.x - transform.position.x;
+        float yDis = mousePos.y - transform.position.y;
+
+        float angle = Mathf.Atan(yDis / xDis);
+        float totalVel = (xDis / Mathf.Cos(angle)) * shotPower;
+
+        try
+        {
+            Vector2 velocity = new Vector2 (-1 * totalVel * Mathf.Cos(angle) , -1 * totalVel * Mathf.Sin(angle));
+
+            playerBody.velocity = velocity;
+
+        }
+
+        catch
+        {
+            playerBody.velocity = new Vector2(0, Mathf.Clamp(-1 * yDis * shotPower, -maxSpeed, maxSpeed));
+        }
 
     }
+    */
 
 
     /*
@@ -152,5 +186,5 @@ public class PlayerControls : MonoBehaviour
         
     }
     */
-    
+
 }
