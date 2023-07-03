@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -11,6 +12,7 @@ public class PlayerControls : MonoBehaviour
     [Space]
     [SerializeField] private float frictionCoeff;
     [SerializeField] private float stopVelocity;
+    [NonSerialized] public Vector3 origin;
     private LineRenderer line { get; set; }
     private Rigidbody2D playerBody { get; set; }
     private Vector3 mousePos { get; set; }
@@ -28,6 +30,11 @@ public class PlayerControls : MonoBehaviour
         line.enabled = false;
 
         isAiming = false;
+    }
+
+    private void Start()
+    {
+        origin = transform.position;
     }
 
     // Update is called once per frame
