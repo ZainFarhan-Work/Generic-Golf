@@ -33,7 +33,7 @@ public class Bullet : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
-        if (collision.gameObject.name == "Golf Ball")
+        if (collision.gameObject.tag == "Player")
         {
             player.transform.position = player.GetComponent<PlayerControls>().origin;
 
