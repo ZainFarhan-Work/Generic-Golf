@@ -7,6 +7,7 @@ public class Rotation : MonoBehaviour
     [SerializeField] private int rotationSpeed = 100;
     private float rotationAngle { get; set; } = 0;
 
+
     // Update is called once per frame
     void Update()
     {
