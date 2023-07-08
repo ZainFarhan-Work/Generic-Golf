@@ -8,7 +8,7 @@ using UnityEngine;
 public class PlayerControls : MonoBehaviour
 {
     [SerializeField] private int shotPower;
-    [SerializeField] private int maxSpeed;
+    [SerializeField] private float maxSpeed;
     [Space]
     [SerializeField] private float frictionCoeff;
     [SerializeField] private float stopVelocity;
@@ -101,7 +101,16 @@ public class PlayerControls : MonoBehaviour
 
         direction = transform.position - differece;
 
-        Vector3[] positions = { transform.position, transform.position - differece};
+        Vector3 localDirection = direction - transform.position;
+
+        if (localDirection.magnitude > maxSpeed)
+        {
+            localDirection = Vector3.ClampMagnitude(localDirection, maxSpeed);
+        }
+
+        direction = localDirection + transform.position;
+
+        Vector3[] positions = { transform.position, direction};
 
         line.enabled = true;
         line.SetPositions(positions);
@@ -111,18 +120,28 @@ public class PlayerControls : MonoBehaviour
     private void Shoot()
     {
         isAiming = false;
+        isIdle = false;
         line.enabled = false;
 
-        Vector2 localDifference = direction - transform.position;
+        Vector2 localDirection = direction - transform.position;
 
-        playerBody.AddForce(localDifference * Time.deltaTime * shotPower, ForceMode2D.Impulse);
+        /*
+        if (localDifference.magnitude > maxSpeed)
+        {
+            localDifference = Vector2.ClampMagnitude(localDifference, maxSpeed);
+        }
+        */
+
+        playerBody.AddForce(localDirection * shotPower, ForceMode2D.Impulse);
     }
 
     private void Friction(Vector2 velocity)
     {
-        velocity -= velocity * frictionCoeff;
-        
-        playerBody.velocity = velocity;
+        //velocity -= velocity * frictionCoeff;
+
+        //playerBody.velocity = velocity;
+
+        playerBody.AddForce(-velocity * frictionCoeff, ForceMode2D.Force);
 
     }
 
