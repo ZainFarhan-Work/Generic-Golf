@@ -11,12 +11,14 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] private float maxSpeed;
     [Space]
     [SerializeField] private float frictionCoeff;
+    [SerializeField] private float frictionSpeed;
     [SerializeField] private float stopVelocity;
     [NonSerialized] public Vector3 origin;
     private LineRenderer line { get; set; }
     private Rigidbody2D playerBody { get; set; }
     private Vector3 mousePos { get; set; }
     private Vector3 direction { get; set; }
+    private float tempFriction { get; set; }
     private bool isIdle { get; set; }
     private bool isAiming { get; set; }
 
@@ -30,6 +32,8 @@ public class PlayerControls : MonoBehaviour
         line.enabled = false;
 
         isAiming = false;
+
+        tempFriction = frictionCoeff;
     }
 
     private void Start()
@@ -141,7 +145,14 @@ public class PlayerControls : MonoBehaviour
 
         //playerBody.velocity = velocity;
 
-        playerBody.AddForce(-velocity * frictionCoeff, ForceMode2D.Force);
+        //playerBody.AddForce(-velocity * frictionCoeff, ForceMode2D.Force);
+
+        
+
+        frictionCoeff -= frictionSpeed;
+
+        velocity = Vector2.ClampMagnitude(velocity, frictionCoeff);
+
 
     }
 
@@ -151,6 +162,8 @@ public class PlayerControls : MonoBehaviour
         playerBody.angularVelocity = 0;
 
         isIdle = true;
+
+        frictionCoeff = tempFriction;
     }
 
 
