@@ -263,7 +263,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shotPower: 5
   maxSpeed: 8
-  frictionCoeff: 3
+  frictionCoeff: 8
+  frictionSpeed: 1
   stopVelocity: 0.5
 --- !u!120 &686084727
 LineRenderer:

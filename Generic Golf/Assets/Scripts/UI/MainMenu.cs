@@ -5,22 +5,22 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    private void Play()
+    public void Play()
     {
         SceneManager.LoadScene(1);
     }
 
-    private void Options()
+    public void Options()
     {
 
     }
 
-    private void Credit()
+    public void Credit()
     {
 
     }
 
-    private void Quit()
+    public void Quit()
     {
         Application.Quit();
     }
