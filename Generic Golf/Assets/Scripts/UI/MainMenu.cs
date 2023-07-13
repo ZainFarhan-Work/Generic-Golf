@@ -7,7 +7,8 @@ public class MainMenu : MonoBehaviour
 {
     public void Play()
     {
-        SceneManager.LoadScene(1);
+        //SceneManager.LoadScene("Prototype");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     public void Options()
@@ -22,6 +23,7 @@ public class MainMenu : MonoBehaviour
 
     public void Quit()
     {
+        Debug.Log ("QUIT");
         Application.Quit();
     }
 }
