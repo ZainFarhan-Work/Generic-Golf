@@ -11,7 +11,6 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] private float maxSpeed;
     [Space]
     [SerializeField] private float frictionCoeff;
-    [SerializeField] private float frictionSpeed;
     [SerializeField] private float stopVelocity;
     [NonSerialized] public Vector3 origin;
     private LineRenderer line { get; set; }
@@ -141,17 +140,11 @@ public class PlayerControls : MonoBehaviour
 
     private void Friction(Vector2 velocity)
     {
-        //velocity -= velocity * frictionCoeff;
+        velocity -= velocity * frictionCoeff;
 
-        //playerBody.velocity = velocity;
+        playerBody.velocity = velocity;
 
         //playerBody.AddForce(-velocity * frictionCoeff, ForceMode2D.Force);
-
-        
-
-        frictionCoeff -= frictionSpeed;
-
-        velocity = Vector2.ClampMagnitude(velocity, frictionCoeff);
 
 
     }
