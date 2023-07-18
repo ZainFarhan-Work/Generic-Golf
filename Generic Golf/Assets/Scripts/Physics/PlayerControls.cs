@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] private float frictionCoeff;
     [SerializeField] private float stopVelocity;
     [NonSerialized] public Vector3 origin;
+    private GameObject PauseMenu { get; set; }
     private LineRenderer line { get; set; }
     private Rigidbody2D playerBody { get; set; }
     private Vector3 mousePos { get; set; }
@@ -23,6 +25,9 @@ public class PlayerControls : MonoBehaviour
 
     private void Awake()
     {
+        PauseMenu = GameObject.FindGameObjectWithTag("Pause Menu");
+        PauseMenu.SetActive(false);
+
         playerBody = GetComponent<Rigidbody2D>();
 
         line = GetComponent<LineRenderer>();
@@ -58,7 +63,12 @@ public class PlayerControls : MonoBehaviour
             }
 
         }
-        
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Pause();
+        }
+
     }
 
     private void FixedUpdate()
@@ -67,7 +77,7 @@ public class PlayerControls : MonoBehaviour
         {
             Friction(playerBody.velocity);
         }
-   
+
     }
 
 
@@ -92,7 +102,7 @@ public class PlayerControls : MonoBehaviour
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         DrawLine(mousePos);
 
-        
+
 
     }
 
@@ -113,11 +123,11 @@ public class PlayerControls : MonoBehaviour
 
         direction = localDirection + transform.position;
 
-        Vector3[] positions = { transform.position, direction};
+        Vector3[] positions = { transform.position, direction };
 
         line.enabled = true;
         line.SetPositions(positions);
-              
+
     }
 
     private void Shoot()
@@ -157,6 +167,13 @@ public class PlayerControls : MonoBehaviour
         isIdle = true;
 
         frictionCoeff = tempFriction;
+    }
+
+    private void Pause()
+    {
+        Time.timeScale = 0;
+
+        PauseMenu.SetActive(true);
     }
 
 
