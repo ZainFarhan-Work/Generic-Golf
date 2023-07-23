@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class GolfPost : MonoBehaviour
 {
-    
+    private GameObject finishScreen { get; set; }
 
 
     void Awake()
     {
-        
+        finishScreen = GameObject.Find("Finish Screen");
+        finishScreen.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -22,6 +23,7 @@ public class GolfPost : MonoBehaviour
 
     void Finish()
     {
-        Debug.Log("Finish!");
+        Time.timeScale = 0;
+        finishScreen.SetActive(true);
     }
 }

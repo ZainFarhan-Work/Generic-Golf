@@ -17,6 +17,19 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1;
     }
 
+    public void NextLevel()
+    {
+        try
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        catch (System.Exception)
+        {
+            Debug.Log("Level Not Found");
+            throw;
+        }
+    }
+
     public void LoadMainMenu()
     {
         Time.timeScale = 1;
