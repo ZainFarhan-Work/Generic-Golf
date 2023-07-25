@@ -3,30 +3,39 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Runtime.CompilerServices;
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
+    [SerializeField] private int maxShots;
+    [Space]
     [SerializeField] private int shotPower;
     [SerializeField] private float maxSpeed;
     [Space]
     [SerializeField] private float frictionCoeff;
     [SerializeField] private float stopVelocity;
     [NonSerialized] public Vector3 origin;
-    private GameObject PauseMenu { get; set; }
+    private TextMeshProUGUI strokes { get; set; }
+    private GameObject pauseMenu { get; set; }
+    private GameObject gameOver { get; set; }
     private LineRenderer line { get; set; }
     private Rigidbody2D playerBody { get; set; }
     private Vector3 mousePos { get; set; }
     private Vector3 direction { get; set; }
-    private float tempFriction { get; set; }
     private bool isIdle { get; set; }
     private bool isAiming { get; set; }
 
     private void Awake()
     {
-        PauseMenu = GameObject.FindGameObjectWithTag("Pause Menu");
-        PauseMenu.SetActive(false);
+        strokes = GameObject.Find("Stroke Count").GetComponent<TextMeshProUGUI>();
+        strokes.text = "Strokes:" + maxShots;
+
+        gameOver = GameObject.FindGameObjectWithTag("Game Over");
+        gameOver.SetActive(false);
+        pauseMenu = GameObject.FindGameObjectWithTag("Pause Menu");
+        pauseMenu.SetActive(false);
 
         playerBody = GetComponent<Rigidbody2D>();
 
@@ -37,7 +46,6 @@ public class PlayerControls : MonoBehaviour
 
         isAiming = false;
 
-        tempFriction = frictionCoeff;
     }
 
     private void Start()
@@ -135,6 +143,9 @@ public class PlayerControls : MonoBehaviour
         isAiming = false;
         isIdle = false;
         line.enabled = false;
+        maxShots--;
+
+        strokes.text = "Strokes:" + maxShots;
 
         Vector2 localDirection = direction - transform.position;
 
@@ -166,16 +177,23 @@ public class PlayerControls : MonoBehaviour
 
         isIdle = true;
 
-        frictionCoeff = tempFriction;
+        if (maxShots == 0)
+        {
+            Die();
+        }
     }
 
     private void Pause()
     {
         Time.timeScale = 0;
 
-        PauseMenu.SetActive(true);
+        pauseMenu.SetActive(true);
     }
 
+    private void Die()
+    {
+           gameOver.SetActive(true);
+    }
 
 
 
