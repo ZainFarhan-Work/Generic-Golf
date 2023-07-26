@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class LevelSelect : MonoBehaviour
@@ -10,8 +11,10 @@ public class LevelSelect : MonoBehaviour
         
     }
 
-    public void OpenScene(){
+    public void OpenScene()
+    {
 
+        SceneManager.LoadScene(1);
         Debug.Log("loaded scene");
 
     }
