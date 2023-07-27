@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Pause Menu
   - Game Over
+  - brown box 1
+  - brown box 2
   layers:
   - Default
   - TransparentFX
