@@ -12,8 +12,8 @@ public class Teleport : MonoBehaviour
 */
 
     // Start is called before the first frame update
-    void Start()
-    {
+    //void Start()
+    //{
         /*
      if (isbox1 == false)
      {
@@ -24,9 +24,9 @@ public class Teleport : MonoBehaviour
         destination = GameObject.FindGameObjectWithTag("brown box 2").GetComponent<Transform>;
      }
         */
-    }
+    //}
 
-
+/*
     public Transform destinationPortal;
     private Rigidbody2D playerBody;
 
@@ -45,11 +45,68 @@ public class Teleport : MonoBehaviour
         playerBody.simulated = false;
 
 
+
         Vector2 offset = (Vector2)player.position - (Vector2)transform.position;
         player.position = (Vector2)destinationPortal.position + offset;
 
         playerBody.simulated = true;
     }
+*/
+
+    public Transform destinationPortal;
+    private Rigidbody2D playerBody;
+    private bool isTeleporting = false; // Flag to prevent consecutive teleportation
+    private float teleportCooldown = 0.5f; // Cooldown time before the player can teleport again
+    private int playerLayer; // The layer of the player
+    private int ignoreTeleportLayer; // The layer index for the "IgnoreTeleport" layer
+
+    private void Start()
+    {
+        playerBody = GetComponent<Rigidbody2D>();
+        playerLayer = LayerMask.NameToLayer("Player");
+        ignoreTeleportLayer = LayerMask.NameToLayer("IgnoreTeleport");
+    }
+
+    private void Update()
+    {
+        // Your frame rate independent movement code here
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!isTeleporting && other.CompareTag("Player"))
+        {
+            TeleportPlayer(other.transform);
+        }
+    }
+
+    private void TeleportPlayer(Transform player)
+    {
+        // Disable physics interactions during teleportation
+        playerBody.simulated = false;
+        isTeleporting = true;
+
+        // Change the player's layer to "IgnoreTeleport" to prevent immediate re-entry
+        player.gameObject.layer = ignoreTeleportLayer;
+
+        Vector2 offset = (Vector2)player.position - (Vector2)transform.position;
+        player.position = (Vector2)destinationPortal.position + offset;
+
+        // Re-enable physics and reset the player's layer after a short delay
+        StartCoroutine(EnablePhysicsWithCooldown(player.gameObject));
+    }
+
+    private IEnumerator EnablePhysicsWithCooldown(GameObject playerObject)
+    {
+        // Wait for a short delay before enabling physics again
+        yield return new WaitForSeconds(teleportCooldown);
+
+        // Reset the player's layer to "Player"
+        playerObject.layer = playerLayer;
+        playerBody.simulated = true;
+        isTeleporting = false;
+    }
+
 
 /*
     void OnTriggerEnter2D(Collider2D other){
