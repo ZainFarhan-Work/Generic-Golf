@@ -266,6 +266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd330b0e04239ca43a3a85f9692ee523, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxShots: 10
   shotPower: 5
   maxSpeed: 8
   frictionCoeff: 0.03
