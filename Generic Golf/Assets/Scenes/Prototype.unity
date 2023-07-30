@@ -133,9 +133,9 @@ GameObject:
   m_Component:
   - component: {fileID: 37648907}
   - component: {fileID: 37648911}
-  - component: {fileID: 37648910}
   - component: {fileID: 37648908}
   - component: {fileID: 37648912}
+  - component: {fileID: 37648910}
   m_Layer: 3
   m_Name: brown box 1
   m_TagString: Untagged

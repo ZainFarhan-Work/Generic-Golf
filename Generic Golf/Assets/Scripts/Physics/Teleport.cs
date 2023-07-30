@@ -14,51 +14,51 @@ public class Teleport : MonoBehaviour
     // Start is called before the first frame update
     //void Start()
     //{
-        /*
-     if (isbox1 == false)
-     {
-        destination = GameObject.FindGameObjectWithTag("brown box 1").GetComponent<Transform>;
-     }  
-     else
-     {
-        destination = GameObject.FindGameObjectWithTag("brown box 2").GetComponent<Transform>;
-     }
-        */
+    /*
+ if (isbox1 == false)
+ {
+    destination = GameObject.FindGameObjectWithTag("brown box 1").GetComponent<Transform>;
+ }  
+ else
+ {
+    destination = GameObject.FindGameObjectWithTag("brown box 2").GetComponent<Transform>;
+ }
+    */
     //}
 
-/*
-    public Transform destinationPortal;
-    private Rigidbody2D playerBody;
+    /*
+        public Transform destinationPortal;
+        private Rigidbody2D playerBody;
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            TeleportPlayer(other.transform);
+            if (other.CompareTag("Player"))
+            {
+                TeleportPlayer(other.transform);
+            }
         }
-    }
 
-    private void TeleportPlayer(Transform player)
-    {
-        // Disable physics interactions during teleportation
-        playerBody = player.GetComponent<Rigidbody2D>();
-        playerBody.simulated = false;
-
+        private void TeleportPlayer(Transform player)
+        {
+            // Disable physics interactions during teleportation
+            playerBody = player.GetComponent<Rigidbody2D>();
+            playerBody.simulated = false;
 
 
-        Vector2 offset = (Vector2)player.position - (Vector2)transform.position;
-        player.position = (Vector2)destinationPortal.position + offset;
 
-        playerBody.simulated = true;
-    }
-*/
+            Vector2 offset = (Vector2)player.position - (Vector2)transform.position;
+            player.position = (Vector2)destinationPortal.position + offset;
 
-    public Transform destinationPortal;
-    private Rigidbody2D playerBody;
-    private bool isTeleporting = false; // Flag to prevent consecutive teleportation
-    private float teleportCooldown = 0.5f; // Cooldown time before the player can teleport again
-    private int playerLayer; // The layer of the player
-    private int ignoreTeleportLayer; // The layer index for the "IgnoreTeleport" layer
+            playerBody.simulated = true;
+        }
+    */
+
+    [SerializeField] private Transform destinationPortal;
+    private Rigidbody2D playerBody { get; set; }
+    private bool isTeleporting { get; set; } = false; // Flag to prevent consecutive teleportation
+    private float teleportCooldown { get; set; } = 0.5f; // Cooldown time before the player can teleport again
+    private int playerLayer { get; set; } // The layer of the player
+    private int ignoreTeleportLayer { get; set; } // The layer index for the "IgnoreTeleport" layer
 
     private void Start()
     {
