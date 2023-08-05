@@ -85,7 +85,6 @@ public class PlayerControls : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Score();
 
         ProcessAiming();
 
@@ -110,7 +109,7 @@ public class PlayerControls : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Tab))
         {
-            scoreBoard.SetActive(true);
+            Score();
         }
 
         if (Input.GetKeyUp(KeyCode.Tab))
@@ -240,6 +239,7 @@ public class PlayerControls : MonoBehaviour
 
     private void Score()
     {
+        scoreBoard.SetActive(true);
 
         hits.text = "Hits: " + strokesHit + "/" + maxShots;
 
