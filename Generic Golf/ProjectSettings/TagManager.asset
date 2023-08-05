@@ -8,6 +8,7 @@ TagManager:
   - Game Over
   - brown box 1
   - brown box 2
+  - ScoreBoard
   layers:
   - Default
   - TransparentFX
